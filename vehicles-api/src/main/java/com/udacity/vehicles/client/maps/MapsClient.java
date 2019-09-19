@@ -14,11 +14,21 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Component
 public class MapsClient {
 
+    /** The Constant log. */
     private static final Logger log = LoggerFactory.getLogger(MapsClient.class);
 
+    /** The client. */
     private final WebClient client;
+    
+    /** The mapper. */
     private final ModelMapper mapper;
 
+    /**
+     * Instantiates a new maps client.
+     *
+     * @param maps the maps
+     * @param mapper the mapper
+     */
     public MapsClient(WebClient maps,
             ModelMapper mapper) {
         this.client = maps;
@@ -44,7 +54,11 @@ public class MapsClient {
                     .retrieve().bodyToMono(Address.class).block();
 
             mapper.map(Objects.requireNonNull(address), location);
-
+            location.setAddress(address.getAddress());
+            location.setCity(address.getCity());
+            location.setState(address.getState());
+            location.setZip(address.getZip());
+           
             return location;
         } catch (Exception e) {
             log.warn("Map service is down");

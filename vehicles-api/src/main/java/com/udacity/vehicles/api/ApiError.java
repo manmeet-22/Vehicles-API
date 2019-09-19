@@ -9,18 +9,37 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 class ApiError {
 
+    /** The message. */
     private final String message;
+    
+    /** The errors. */
     private final List<String> errors;
 
+    /**
+     * Instantiates a new api error.
+     *
+     * @param message the message
+     * @param errors the errors
+     */
     ApiError(String message, List<String> errors) {
         this.message = message;
         this.errors = errors;
     }
 
+    /**
+     * Gets the message.
+     *
+     * @return the message
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     * Gets the errors.
+     *
+     * @return the errors
+     */
     public List<String> getErrors() {
         return errors;
     }

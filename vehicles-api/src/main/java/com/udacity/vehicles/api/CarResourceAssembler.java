@@ -8,11 +8,17 @@ import org.springframework.stereotype.Component;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
 /**
- * Maps the CarController to the Car class using HATEOAS
+ * Maps the CarController to the Car class using HATEOAS.
  */
 @Component
 public class CarResourceAssembler implements ResourceAssembler<Car, Resource<Car>> {
 
+    /**
+     * To resource.
+     *
+     * @param car the car
+     * @return the resource
+     */
     @Override
     public Resource<Car> toResource(Car car) {
         return new Resource<>(car,

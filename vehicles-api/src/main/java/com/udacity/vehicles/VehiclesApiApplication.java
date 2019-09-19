@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,8 +19,14 @@ import org.springframework.web.reactive.function.client.WebClient;
  */
 @SpringBootApplication
 @EnableJpaAuditing
+@EnableEurekaClient
 public class VehiclesApiApplication {
 
+    /**
+     * The main method.
+     *
+     * @param args the arguments
+     */
     public static void main(String[] args) {
         SpringApplication.run(VehiclesApiApplication.class, args);
     }
@@ -40,13 +47,19 @@ public class VehiclesApiApplication {
         };
     }
 
+    /**
+     * Model mapper.
+     *
+     * @return the model mapper
+     */
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
 
     /**
-     * Web Client for the maps (location) API
+     * Web Client for the maps (location) API.
+     *
      * @param endpoint where to communicate for the maps API
      * @return created maps endpoint
      */
@@ -56,7 +69,8 @@ public class VehiclesApiApplication {
     }
 
     /**
-     * Web Client for the pricing API
+     * Web Client for the pricing API.
+     *
      * @param endpoint where to communicate for the pricing API
      * @return created pricing endpoint
      */

@@ -6,6 +6,11 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.service.CarService;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.ApiResponse;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -31,9 +36,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/cars")
 class CarController {
 
+    /** The car service. */
     private final CarService carService;
+    
+    /** The assembler. */
     private final CarResourceAssembler assembler;
 
+    /**
+     * Instantiates a new car controller.
+     *
+     * @param carService the car service
+     * @param assembler the assembler
+     */
     CarController(CarService carService, CarResourceAssembler assembler) {
         this.carService = carService;
         this.assembler = assembler;
@@ -43,6 +57,8 @@ class CarController {
      * Creates a list to store any vehicles.
      * @return list of vehicles
      */
+    @ApiOperation(value = "Returns List of Cars")
+    @ApiResponses(value = {@ApiResponse(code = 200,message = "Succesfully retrieved cars")})
     @GetMapping
     Resources<Resource<Car>> list() {
         List<Resource<Car>> resources = carService.list().stream().map(assembler::toResource)
@@ -56,14 +72,13 @@ class CarController {
      * @param id the id number of the given vehicle
      * @return all information for the requested vehicle
      */
+    @ApiOperation(value = "Returns Car details associated with the id")
+    @ApiResponses(value = {@ApiResponse(code = 200,message = "Succesfully retrieved car associated with id")})
     @GetMapping("/{id}")
     Resource<Car> get(@PathVariable Long id) {
-        /**
-         * TODO: Use the `findById` method from the Car Service to get car information.
-         * TODO: Use the `assembler` on that car and return the resulting output.
-         *   Update the first line as part of the above implementing.
-         */
-        return assembler.toResource(new Car());
+        
+	Car car = carService.findById(id);
+        return assembler.toResource(car);
     }
 
     /**
@@ -72,14 +87,13 @@ class CarController {
      * @return response that the new vehicle was added to the system
      * @throws URISyntaxException if the request contains invalid fields or syntax
      */
+    @ApiOperation(value = "Saves new car details")
+    @ApiResponses(value = {@ApiResponse(code = 200,message = "Succesfully saved car details")})
     @PostMapping
     ResponseEntity<?> post(@Valid @RequestBody Car car) throws URISyntaxException {
-        /**
-         * TODO: Use the `save` method from the Car Service to save the input car.
-         * TODO: Use the `assembler` on that saved car and return as part of the response.
-         *   Update the first line as part of the above implementing.
-         */
-        Resource<Car> resource = assembler.toResource(new Car());
+  
+	Car saveNewCar = carService.save(car);
+        Resource<Car> resource = assembler.toResource(saveNewCar);
         return ResponseEntity.created(new URI(resource.getId().expand().getHref())).body(resource);
     }
 
@@ -89,15 +103,14 @@ class CarController {
      * @param car The updated information about the related vehicle.
      * @return response that the vehicle was updated in the system
      */
+    @ApiOperation(value = "Updates car details")
+    @ApiResponses(value = {@ApiResponse(code = 200,message = "Succesfully updated car details")})
     @PutMapping("/{id}")
     ResponseEntity<?> put(@PathVariable Long id, @Valid @RequestBody Car car) {
-        /**
-         * TODO: Set the id of the input car object to the `id` input.
-         * TODO: Save the car using the `save` method from the Car service
-         * TODO: Use the `assembler` on that updated car and return as part of the response.
-         *   Update the first line as part of the above implementing.
-         */
-        Resource<Car> resource = assembler.toResource(new Car());
+       
+	car.setId(id);
+	Car updatedCar = carService.save(car);
+        Resource<Car> resource = assembler.toResource(updatedCar);
         return ResponseEntity.ok(resource);
     }
 
@@ -106,11 +119,12 @@ class CarController {
      * @param id The ID number of the vehicle to remove.
      * @return response that the related vehicle is no longer in the system
      */
+    @ApiOperation(value = "Delete car details")
+    @ApiResponses(value = {@ApiResponse(code = 200,message = "Succesfully deleted cars details")})
     @DeleteMapping("/{id}")
     ResponseEntity<?> delete(@PathVariable Long id) {
-        /**
-         * TODO: Use the Car Service to delete the requested vehicle.
-         */
+        
+	carService.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

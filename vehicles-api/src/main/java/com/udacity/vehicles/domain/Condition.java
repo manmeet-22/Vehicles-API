@@ -5,6 +5,9 @@ package com.udacity.vehicles.domain;
  */
 public enum Condition {
 
+    /** The used. */
     USED,
+    
+    /** The new. */
     NEW;
 }

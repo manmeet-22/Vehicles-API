@@ -1,6 +1,7 @@
+/*
+ * 
+ */
 package com.udacity.pricing.service;
-
-import com.udacity.pricing.domain.price.Price;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -9,14 +10,14 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
+import com.udacity.pricing.domain.price.Price;
+
 /**
  * Implements the pricing service to get prices for each vehicle.
  */
 public class PricingService {
 
-    /**
-     * Holds {ID: Price} pairings (current implementation allows for 20 vehicles)
-     */
+    /** Holds {ID: Price} pairings (current implementation allows for 20 vehicles). */
     private static final Map<Long, Price> PRICES = LongStream
             .range(1, 20)
             .mapToObj(i -> new Price("USD", randomPrice(), i))
@@ -33,7 +34,7 @@ public class PricingService {
         if (!PRICES.containsKey(vehicleId)) {
             throw new PriceException("Cannot find price for Vehicle " + vehicleId);
         }
-
+        
         return PRICES.get(vehicleId);
     }
 

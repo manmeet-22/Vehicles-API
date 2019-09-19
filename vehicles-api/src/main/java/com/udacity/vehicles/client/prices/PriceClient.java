@@ -2,8 +2,10 @@ package com.udacity.vehicles.client.prices;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.http.HttpHeaders;
 
 /**
  * Implements a class to interface with the Pricing Client for price data.
@@ -11,10 +13,17 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Component
 public class PriceClient {
 
+    /** The Constant log. */
     private static final Logger log = LoggerFactory.getLogger(PriceClient.class);
 
+    /** The client. */
     private final WebClient client;
 
+    /**
+     * Instantiates a new price client.
+     *
+     * @param pricing the pricing
+     */
     public PriceClient(WebClient pricing) {
         this.client = pricing;
     }
@@ -47,5 +56,41 @@ public class PriceClient {
             log.error("Unexpected error retrieving price for vehicle {}", vehicleId, e);
         }
         return "(consult price)";
+    }
+    
+    
+    /**
+     * Saves a price to pricing client with the given id.
+     *
+     * @param price Price in a String format "currency price"
+     * @param vehicleId ID number of the vehicle for which to save the price
+     */
+    public void updatePrice(String price, Long vehicleId) {
+        Price priceObj = new Price(price);
+        priceObj.setVehicleId(vehicleId);
+        savePrice(priceObj);
+    }
+    
+    /**
+     * Saves a price to pricing client.
+     *
+     * @param price the price
+     */
+    private void savePrice(Price price) {
+        try {
+            client
+                    .post()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/")
+                            .build()
+                    )
+                    .syncBody(price)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .retrieve().bodyToMono(Price.class).block();
+
+        } catch (Exception e) {
+            log.error("Unexpected error saving price for vehicle {}", price.getVehicleId(), e);
+        }
     }
 }
